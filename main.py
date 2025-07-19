@@ -12,7 +12,6 @@ preprocessed = [item.strip() for item in preprocessed if item.strip()]
 all_tokens = sorted(list(set(preprocessed)))
 all_tokens.extend(["<|endoftext|>", "<|unk|>"])
 vocab_size = len(all_tokens)
-print(vocab_size)
 
 
 vocab = {token:integer for integer, token in enumerate(all_tokens)}

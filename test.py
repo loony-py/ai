@@ -6,15 +6,19 @@ import torch
 # res = torch.backends.mps.is_available()
 # print(res)
 
-x = torch.tensor(7)
-print(x)
+a = torch.tensor([[[1, 2, 3, 4]]])
+b = torch.tensor([
+    [4, 5, 6],
+    [4, 5, 6],
+    [4, 5, 6],
+    [4, 5, 6],
+])
+d = torch.matmul(a, b)
+print(d)
 
-y = x.ndim
-print(y)
+# a = torch.rand(3, 5)
+# b = torch.rand(3, 5)
 
-z = x.item()
-print(z)
-
-vector = torch.tensor([7, 7])
-print(vector)
-print(vector.ndim)
+# print(torch.matmul(a, b))
+# print(a)
+# print(b)
