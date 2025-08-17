@@ -1,205 +1,161 @@
-Here’s a **comprehensive list of basic PyTorch commands**, organized by category for easier reference. This covers the fundamentals you'll use frequently when working with PyTorch.
+Got it — you want a **PyTorch command toolkit** for all the essential math and tensor operations you’ll actually use in ML/AI.
+
+Here’s a **beginner-friendly but complete** reference so you can keep it handy while coding.
 
 ---
 
-### 🔧 1. **Installation**
-
-```bash
-pip install torch torchvision torchaudio
-```
-
----
-
-### 🔢 2. **Tensors**
-
-#### Create Tensors
+## **1. Tensor Creation**
 
 ```python
 import torch
 
-# From data
-x = torch.tensor([1.0, 2.0, 3.0])
-# Zeros, ones, random
-torch.zeros(2, 3)
-torch.ones(2, 3)
-torch.rand(2, 3)
-torch.randn(2, 3)
-# Identity and arange
-torch.eye(3)
-torch.arange(0, 10, 2)
+# From Python lists
+a = torch.tensor([1, 2, 3], dtype=torch.float32)
+
+# Zeros & ones
+torch.zeros(3, 3)   # 3x3 zero matrix
+torch.ones(2, 4)    # 2x4 ones
+
+# Random
+torch.rand(2, 3)    # uniform random [0,1)
+torch.randn(2, 3)   # normal distribution
+
+# Identity matrix
+torch.eye(3)        # 3x3 identity
+
+# Range
+torch.arange(0, 10, 2)  # 0, 2, 4, 6, 8
+torch.linspace(0, 1, 5) # evenly spaced numbers
 ```
 
-#### Tensor Properties
+---
+
+## **2. Reshaping & Transposing**
 
 ```python
-x.shape
-x.dtype
-x.device
+x = torch.arange(1, 7).reshape(2, 3)  # reshape
+x.T                                    # transpose
+x.view(-1)                             # flatten
+x.unsqueeze(0)                         # add dimension
+x.squeeze()                            # remove dimension
 ```
 
-#### Data Types
+---
+
+## **3. Basic Math**
 
 ```python
-x.float()
-x.int()
-x.long()
-```
+a = torch.tensor([1, 2, 3], dtype=torch.float32)
+b = torch.tensor([4, 5, 6], dtype=torch.float32)
 
-#### Reshaping
-
-```python
-x.view(3, 1)
-x.reshape(3, 1)
-x.squeeze()   # remove dimensions of size 1
-x.unsqueeze(0)  # add dimension
-```
-
-#### Indexing/Slicing
-
-```python
-x[0]
-x[:2]
-x[:, 1]
-```
-
-#### Tensor Math
-
-```python
+# Elementwise operations
 a + b
 a - b
 a * b
 a / b
-a @ b.T   # matrix multiplication
-torch.matmul(a, b)
-torch.dot(a, b)
+a ** 2         # power
+
+# In-place ops (modifies a directly)
+a.add_(b)
+a.mul_(b)
+
+# Common functions
+torch.sqrt(a)
+torch.exp(a)
+torch.log(a)
+torch.abs(a)
+torch.sin(a)
+torch.cos(a)
 ```
 
 ---
 
-### 🎛️ 3. **GPU Support**
+## **4. Matrix Operations**
 
 ```python
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-x = x.to(device)
+A = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32)
+B = torch.tensor([[5, 6], [7, 8]], dtype=torch.float32)
+
+# Matrix multiplication
+torch.matmul(A, B)   # or A @ B
+
+# Elementwise multiplication
+A * B
+
+# Dot product (1D vectors)
+u = torch.tensor([1, 2, 3], dtype=torch.float32)
+v = torch.tensor([4, 5, 6], dtype=torch.float32)
+torch.dot(u, v)   # 1*4 + 2*5 + 3*6
+
+# Transpose
+A.T
+
+# Inverse
+torch.inverse(A)
+
+# Determinant
+torch.det(A)
 ```
 
 ---
 
-### 🔄 4. **Autograd (Automatic Differentiation)**
+## **5. Statistics & Aggregations**
 
 ```python
-x = torch.tensor([2.0], requires_grad=True)
-y = x ** 2
-y.backward()
-x.grad  # dy/dx
+x = torch.tensor([[1, 2, 3], [4, 5, 6]], dtype=torch.float32)
+
+x.sum()            # total sum
+x.mean()           # average
+x.std()            # standard deviation
+x.min(), x.max()   # min & max
+x.argmin(), x.argmax()  # indices of min & max
+
+# Along a dimension
+x.sum(dim=0)  # column-wise sum
+x.sum(dim=1)  # row-wise sum
 ```
 
 ---
 
-### 🏗️ 5. **Neural Network Building**
-
-#### Define a Model
+## **6. Comparison & Logical Ops**
 
 ```python
-import torch.nn as nn
-import torch.nn.functional as F
+a = torch.tensor([1, 2, 3])
+b = torch.tensor([3, 2, 1])
 
-class Net(nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        self.fc1 = nn.Linear(784, 128)
-        self.fc2 = nn.Linear(128, 10)
+a == b
+a != b
+a > b
+a < b
 
-    def forward(self, x):
-        x = F.relu(self.fc1(x))
-        return self.fc2(x)
-
-model = Net()
-```
-
-#### Loss & Optimizer
-
-```python
-criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
-```
-
-#### Training Loop Skeleton
-
-```python
-for epoch in range(epochs):
-    for data, labels in dataloader:
-        data, labels = data.to(device), labels.to(device)
-
-        optimizer.zero_grad()
-        output = model(data)
-        loss = criterion(output, labels)
-        loss.backward()
-        optimizer.step()
+torch.all(a < b)    # all elements satisfy condition
+torch.any(a < b)    # any element satisfies condition
 ```
 
 ---
 
-### 📦 6. **Data Loading**
-
-#### Dataset & DataLoader
+## **7. GPU Operations**
 
 ```python
-from torch.utils.data import DataLoader, TensorDataset
-
-dataset = TensorDataset(x_data, y_data)
-loader = DataLoader(dataset, batch_size=32, shuffle=True)
-```
-
-#### Built-in Datasets
-
-```python
-from torchvision import datasets, transforms
-
-transform = transforms.ToTensor()
-train_data = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
-train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
+device = "cuda" if torch.cuda.is_available() else "cpu"
+x = torch.rand(3, 3).to(device)
+y = torch.rand(3, 3).to(device)
+z = x + y
 ```
 
 ---
 
-### 💾 7. **Saving and Loading Models**
-
-#### Save
+## **8. Useful Extras**
 
 ```python
-torch.save(model.state_dict(), 'model.pth')
-```
-
-#### Load
-
-```python
-model.load_state_dict(torch.load('model.pth'))
-model.eval()
+torch.clamp(x, min=0)       # clip values below 0
+torch.where(a > b, a, b)    # elementwise conditional
+torch.topk(a, k=2)          # top 2 values
+torch.sort(a)               # sort values
 ```
 
 ---
 
-### 🧪 8. **Evaluation**
+✅ This set of commands covers **90%** of the PyTorch tensor work you’ll do in ML/AI — from data preprocessing to forward passes in neural networks.
 
-```python
-model.eval()
-with torch.no_grad():
-    output = model(x)
-```
-
----
-
-### 📊 9. **Tensor Utilities**
-
-```python
-x.item()           # get Python number from a single-element tensor
-x.numpy()          # to NumPy
-torch.from_numpy(numpy_array)  # from NumPy
-torch.cat((a, b), dim=0)       # concatenate
-torch.stack([a, b], dim=0)     # stack
-```
-
----
-
-Would you like a **printable cheat sheet** PDF version of this as well?
+If you want, I can also make you a **visual PyTorch cheatsheet** with all these commands laid out like a quick-reference poster — perfect for beginners. That way you don’t have to scroll through code blocks.

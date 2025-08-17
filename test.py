@@ -1,24 +1,11 @@
 import torch
 
-# res = torch.cuda.is_available()
-# print(res)
+# From Python lists
+a = torch.tensor([1, 2, 3], dtype=torch.float32)
+b = torch.zeros(3, 3)   # 3x3 zero matrix
+c = torch.ones(3, 4)    # 2x4 ones
 
-# res = torch.backends.mps.is_available()
-# print(res)
-
-a = torch.tensor([[[1, 2, 3, 4]]])
-b = torch.tensor([
-    [4, 5, 6],
-    [4, 5, 6],
-    [4, 5, 6],
-    [4, 5, 6],
-])
-d = torch.matmul(a, b)
-print(d)
-
-# a = torch.rand(3, 5)
-# b = torch.rand(3, 5)
-
-# print(torch.matmul(a, b))
-# print(a)
-# print(b)
+print("Tensor a:", a)
+print("Tensor b:", b)
+print("Tensor c", c)
+print("Tensor c", c.size(), c.dim())
