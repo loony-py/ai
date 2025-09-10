@@ -1,20 +1,5 @@
-# ------------------------------
-# Self-Attention Mechanism (Step-by-step)
-# ------------------------------
-
 import torch
-
-# ------------------------------
-# 1. Input embeddings (toy example sentence)
-# ------------------------------
-inputs = torch.tensor([
-    [0.43, 0.15, 0.89],  # "Your"   (x^1)
-    [0.55, 0.87, 0.66],  # "journey" (x^2)
-    [0.57, 0.85, 0.64],  # "starts"  (x^3)
-    [0.22, 0.58, 0.33],  # "with"    (x^4)
-    [0.77, 0.25, 0.10],  # "one"     (x^5)
-    [0.05, 0.80, 0.55]   # "step"    (x^6)
-])
+from data_inputs import inputs
 
 print("Input embeddings shape:", inputs.shape)  # (6 words × 3 embedding dims)
 
@@ -73,6 +58,9 @@ print("\nAttention scores (before scaling):", attention_scores)
 
 # ------------------------------
 # 8. Scale and normalize with softmax
+# We compute the attention weights by scaling the attention scores and using the softmax function. 
+# However, now we scale the attention scores by dividing them by the square root of the embedding 
+# dimension of the keys (taking the square root is mathematically the same as exponentiating by 0.5):
 # ------------------------------
 all_key_weights_dimension = all_key_weights.shape[-1]   # key dimension (2)
 scaled_scores = attention_scores / (all_key_weights_dimension ** 0.5)
