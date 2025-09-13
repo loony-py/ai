@@ -1,4 +1,3 @@
-Got it 👍 You want a clean **Python setup** so you can start coding right away.
 Here’s the full setup guide (works like `npm init` + `npm install` in Node.js):
 
 ---

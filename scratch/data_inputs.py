@@ -9,3 +9,5 @@ inputs = torch.tensor(
      [0.77, 0.25, 0.10],  # one      (x^5)
      [0.05, 0.80, 0.55]]  # step     (x^6)
 )
+
+query = inputs[1]
