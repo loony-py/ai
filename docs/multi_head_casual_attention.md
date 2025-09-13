@@ -1,0 +1,3 @@
+### Extending single-head attention to multi-head attention
+
+The term “multi-head” refers to dividing the attention mechanism into multiple “heads,” each operating independently. In this context, a single causal attention module can be considered single-head attention, where there is only one set of attention weights processing the input sequentially. We will tackle this expansion from causal attention to multi-head attention. First, we will intuitively build a multi-head attention module by stacking multiple CausalAttention modules. Then we will then implement the same multi-head attention module in a more complicated but more computationally efficient way.

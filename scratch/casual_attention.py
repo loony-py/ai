@@ -66,7 +66,10 @@ class CasualAttention(nn.Module):
         # Dropout applied after softmax
         self.dropout = nn.Dropout(dropout_probability)
 
-        # Register a causal mask (upper-triangular matrix) to prevent attending to future tokens
+        # The use of register_buffer in PyTorch is not strictly necessary for all use cases but offers several advantages here. 
+        # For instance, when we use the CausalAttention class in our LLM, buffers are automatically moved to the appropriate 
+        # device (CPU or GPU) along with our model, which will be relevant when training our LLM. 
+        # This means we don’t need to manually ensure these tensors are on the same device as your model parameters, avoiding device mismatch errors.
         self.register_buffer(
             "mask",
             torch.triu(torch.ones(context_length, context_length), diagonal=1)
@@ -92,21 +95,24 @@ class CasualAttention(nn.Module):
 
         # Compute raw attention scores (dot product of queries and keys)
         attention_scores = queries @ keys.transpose(1, 2)  # (batch_size, sequence_length, sequence_length)
-
+        print(f"Attention scores: {attention_scores}")
         # Apply causal mask (prevent looking ahead)
         attention_scores.masked_fill_(
             self.mask.bool()[:sequence_length, :sequence_length],
             float("-inf")
         )
+        print(f"Attention scores masked fill: {attention_scores}")
 
         # Normalize attention scores with softmax and scale by sqrt(d_k)
         attention_weights = torch.softmax(
             attention_scores / (keys.shape[-1] ** 0.5),
             dim=-1
         )
+        print(f"Attention weights after applying softmax: {attention_weights}")
 
         # Apply dropout to attention weights
         attention_weights = self.dropout(attention_weights)
+        print(f"Dropped out Attention weights: {attention_weights}")
 
         # Compute weighted sum of values (context vectors)
         context_vectors = attention_weights @ values  # (batch_size, sequence_length, output_dim)
@@ -118,12 +124,13 @@ class CasualAttention(nn.Module):
 if __name__ == "__main__":
     # Create a batch of size 2 by stacking the same input twice
     batch_input = torch.stack((inputs, inputs), dim=0)
-
+    print(f"Batch input: {batch_input}")
     # Fix random seed for reproducibility
     torch.manual_seed(123)
 
     # Define maximum sequence length (context length)
     context_length = batch_input.shape[1]
+    print(f"Context length: {context_length}")
 
     # Initialize Causal Attention module
     causal_attention = CasualAttention(
@@ -134,6 +141,7 @@ if __name__ == "__main__":
     )
 
     # Compute context vectors
-    context_vectors = causal_attention(batch_input)
+    context_vectors = causal_attention.forward(batch_input)
 
     print("Context vectors:", context_vectors)
+    print("Context vectors Shape:", context_vectors.shape)
