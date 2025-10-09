@@ -98,15 +98,22 @@ class CausalSelfAttention(nn.Module):
 
         # Scaled dot-product attention
         attn_scores = queries @ keys.transpose(1, 2)  # (b, n_tokens, n_tokens)
+        print("Attention scores after transpose:\n", attn_scores)
 
         # Apply causal mask (future tokens → -inf)
         attn_scores.masked_fill_(
             self.mask.bool()[:n_tokens, :n_tokens], -torch.inf
         )
+        print("Masked Attention scores:\n", attn_scores)
 
         # Normalize scores into probabilities
         attn_weights = torch.softmax(attn_scores / keys.shape[-1]**0.5, dim=-1)
+
+        print("Softmax Attention weight:\n", attn_weights)
+
         attn_weights = self.dropout(attn_weights)
+
+        print("Softmax Attention weight after dropout:\n", attn_weights)
 
         # Weighted sum of values
         context_vec = attn_weights @ values  # (b, n_tokens, d_out)
